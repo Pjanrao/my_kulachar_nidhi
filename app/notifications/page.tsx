@@ -90,66 +90,45 @@ export default function UserNotificationsPage() {
                             </div>
                         ) : notifications.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {displayedNotifications.map((n, i) => (
+                                {notifications.map((n, i) => (
                                     <motion.div
                                         key={n._id}
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: i * 0.05 }}
-                                        className="group relative overflow-hidden rounded-[28px] border border-[#E9DED2] bg-white/90 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_18px_60px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-1 p-6 flex flex-col h-full"
+                                        className="spiritual-card spiritual-card-hover group h-full flex flex-col p-6 hover:translate-y-[-4px]"
                                     >
-                                        {/* Soft Gradient Glow */}
-                                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-orange-50/40 via-transparent to-red-50/30 pointer-events-none" />
-
-                                        {/* Top Section */}
-                                        <div className="relative z-10 flex items-start justify-between mb-6">
-                                            <div
-                                                className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm border transition-all duration-300 ${n.type === 'event'
-                                                    ? 'bg-orange-50 text-orange-600 border-orange-100'
-                                                    : n.type === 'donation'
-                                                        ? 'bg-rose-50 text-rose-600 border-rose-100'
-                                                        : 'bg-blue-50 text-blue-600 border-blue-100'
-                                                    }`}
-                                            >
+                                        <div className="flex items-center justify-between mb-6">
+                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${n.type === 'event' ? 'bg-orange-50 text-orange-600' :
+                                                    n.type === 'donation' ? 'bg-red-50 text-red-600' :
+                                                        'bg-blue-50 text-blue-600'
+                                                }`}>
                                                 {getTypeIcon(n.type)}
                                             </div>
-
-                                            <span className="text-[10px] font-extrabold uppercase tracking-[0.18em] bg-[#F8F5F1] text-[#8A7E72] px-3 py-1.5 rounded-full">
-                                                {new Date(n.createdAt).toLocaleDateString('en-IN', {
-                                                    day: '2-digit',
-                                                    month: 'short',
-                                                    year: 'numeric',
-                                                })}
+                                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest bg-muted/50 px-3 py-1 rounded-full">
+                                                {new Date(n.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                                             </span>
                                         </div>
 
-                                        {/* Content */}
-                                        <div className="relative z-10 flex-grow">
-                                            <h3 className="text-[24px] leading-tight font-black text-[#3D2B1F] mb-3 group-hover:text-primary transition-colors duration-300">
+                                        <div className="flex-grow">
+                                            <h3 className="text-xl font-black text-secondary mb-3 leading-tight group-hover:text-primary transition-colors">
                                                 {lang === 'mr' && n.titleMr ? n.titleMr : n.title}
                                             </h3>
-
-                                            <p className="text-[15px] leading-7 text-[#7B6D63] line-clamp-4">
+                                            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
                                                 {lang === 'mr' && n.messageMr ? n.messageMr : n.message}
                                             </p>
                                         </div>
 
-                                        {/* Bottom */}
-                                        <div className="relative z-10 mt-8 pt-5 border-t border-[#EFE7DE] flex items-center justify-between">
-                                            <span
-                                                className={`text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full ${n.type === 'event'
-                                                    ? 'bg-orange-100 text-orange-700'
-                                                    : n.type === 'donation'
-                                                        ? 'bg-rose-100 text-rose-700'
-                                                        : 'bg-blue-100 text-blue-700'
-                                                    }`}
-                                            >
+                                        <div className="mt-8 pt-4 border-t border-border/50 flex items-center justify-between">
+                                            <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-lg ${n.type === 'event' ? 'bg-orange-100 text-orange-700' :
+                                                    n.type === 'donation' ? 'bg-red-100 text-red-700' :
+                                                        'bg-blue-100 text-blue-700'
+                                                }`}>
                                                 {n.type}
                                             </span>
-
-                                            <div className="flex items-center gap-1 text-[11px] font-black uppercase tracking-[0.18em] text-primary opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
+                                            <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
                                                 <span>Details</span>
-                                                <ChevronRight className="w-4 h-4" />
+                                                <ChevronRight className="w-3.5 h-3.5" />
                                             </div>
                                         </div>
 
