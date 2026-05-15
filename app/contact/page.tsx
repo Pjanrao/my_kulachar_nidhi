@@ -7,12 +7,12 @@ import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Send, Sparkles, MessageCircle } from 'lucide-react';
 import { useLanguage } from '@/lib/LanguageContext';
 
-export default function ContactPage({ 
-  params, 
-  searchParams 
-}: { 
-  params: Promise<any>; 
-  searchParams: Promise<any>; 
+export default function ContactPage({
+  params,
+  searchParams
+}: {
+  params: Promise<any>;
+  searchParams: Promise<any>;
 }) {
   const { t, lang } = useLanguage();
   const [mounted, setMounted] = React.useState(false);
@@ -84,9 +84,9 @@ export default function ContactPage({
             {/* Contact Form Section */}
             <section className="py-12 md:py-20 relative z-20">
               <div className="max-w-7xl mx-auto px-4 space-y-12">
-                
+
                 {/* 1. TOP: FULL WIDTH FEEDBACK CARD */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="bg-secondary p-8 md:p-12 rounded-[2.5rem] text-white relative overflow-hidden"
@@ -104,13 +104,13 @@ export default function ContactPage({
                     </div>
                     <div className="flex items-center gap-6 px-8 py-4 bg-white/5 rounded-2xl border border-white/10 shrink-0">
                       <div className="flex flex-col items-center gap-1">
-                          <Sparkles className="w-5 h-5 text-primary" />
-                          <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">Premium Support</span>
+                        <Sparkles className="w-5 h-5 text-primary" />
+                        <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">Premium Support</span>
                       </div>
                       <div className="w-px h-8 bg-white/10" />
                       <div className="flex flex-col items-center gap-1">
-                          <Send className="w-5 h-5 text-primary" />
-                          <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">Fast Response</span>
+                        <Send className="w-5 h-5 text-primary" />
+                        <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">Fast Response</span>
                       </div>
                     </div>
                   </div>
@@ -125,7 +125,7 @@ export default function ContactPage({
                       animate={{ opacity: 1, x: 0 }}
                       className="bg-white p-8 md:p-12 rounded-[3rem] border border-border shadow-2xl shadow-secondary/5"
                     >
-                      <form 
+                      <form
                         onSubmit={async (e) => {
                           e.preventDefault();
                           const form = e.currentTarget;
@@ -133,6 +133,7 @@ export default function ContactPage({
                           const data = {
                             name: formData.get('name'),
                             email: formData.get('email'),
+                            phone: formData.get('phone'),
                             subject: formData.get('subject'),
                             message: formData.get('message'),
                           };
@@ -140,7 +141,7 @@ export default function ContactPage({
                           try {
                             const btn = form.querySelector('button[type="submit"]');
                             if (btn) (btn as HTMLButtonElement).disabled = true;
-                            
+
                             const res = await fetch('/api/contact', {
                               method: 'POST',
                               headers: { 'Content-Type': 'application/json' },
@@ -185,15 +186,27 @@ export default function ContactPage({
                           </div>
                         </div>
 
-                        <div className="space-y-3">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Subject</label>
-                          <input
-                            name="subject"
-                            type="text"
-                            required
-                            placeholder="What is this about?"
-                            className="spiritual-input w-full h-16 px-8 rounded-2xl bg-muted/30 border-transparent focus:bg-white focus:border-primary/30 transition-all outline-none text-sm font-bold shadow-inner"
-                          />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                          <div className="space-y-3">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Phone Number</label>
+                            <input
+                              name="phone"
+                              type="tel"
+                              required
+                              placeholder="+91 00000 00000"
+                              className="spiritual-input w-full h-16 px-8 rounded-2xl bg-muted/30 border-transparent focus:bg-white focus:border-primary/30 transition-all outline-none text-sm font-bold shadow-inner"
+                            />
+                          </div>
+                          <div className="space-y-3">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Subject</label>
+                            <input
+                              name="subject"
+                              type="text"
+                              required
+                              placeholder="What is this about?"
+                              className="spiritual-input w-full h-16 px-8 rounded-2xl bg-muted/30 border-transparent focus:bg-white focus:border-primary/30 transition-all outline-none text-sm font-bold shadow-inner"
+                            />
+                          </div>
                         </div>
 
                         <div className="space-y-3">
@@ -240,7 +253,7 @@ export default function ContactPage({
                         </motion.div>
                       ))}
                     </div>
-                    
+
                     {/* Additional Decorative Card */}
                     <div className="bg-gradient-to-br from-orange-500 to-yellow-500 p-8 rounded-[2rem] text-white shadow-2xl shadow-orange-200/50 relative overflow-hidden">
                       <div className="relative z-10">

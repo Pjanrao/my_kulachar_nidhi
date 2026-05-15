@@ -17,14 +17,14 @@ export default function GlobalNotificationToast() {
             const res = await fetch(`/api/notifications?t=${Date.now()}`);
             if (!res.ok) return;
             const data = await res.json();
-            
+
             if (data && data.length > 0) {
                 // If user is on the notifications page, mark ALL existing notifications as seen
                 if (pathname === '/notifications') {
                     const allIds = data.map((n: any) => n._id);
                     const seenIdsStr = localStorage.getItem('seen_notif_ids');
                     const seenIds = seenIdsStr ? JSON.parse(seenIdsStr) : [];
-                    
+
                     const newSeenIds = Array.from(new Set([...seenIds, ...allIds]));
                     localStorage.setItem('seen_notif_ids', JSON.stringify(newSeenIds));
                     setNotifications([]);
@@ -35,13 +35,14 @@ export default function GlobalNotificationToast() {
                     setNotifications([]);
                     return;
                 }
-                
+
                 // Get list of seen IDs from localStorage
                 const seenIdsStr = localStorage.getItem('seen_notif_ids');
                 const seenIds = seenIdsStr ? JSON.parse(seenIdsStr) : [];
-                
+
                 // Filter for notifications NOT in the seen list
                 const unseen = data.filter((n: any) => !seenIds.includes(n._id));
+<<<<<<< HEAD
                 
 <<<<<<< HEAD
                 setNotifications(unseen.slice(0, 1)); 
@@ -52,6 +53,10 @@ export default function GlobalNotificationToast() {
                 setNotifications(unseen.slice(0, 3)); 
 >>>>>>> 8f319bf (Added global notification toast and updated language context)
 >>>>>>> 56f552c9b3acf21b073c58700fbf4bf9ac48314e
+=======
+
+                setNotifications(unseen.slice(0, 3));
+>>>>>>> 9b08594 (contact message UI changes by renuka)
             } else {
                 setNotifications([]);
             }
@@ -69,12 +74,12 @@ export default function GlobalNotificationToast() {
     const handleDismiss = (id: string) => {
         const seenIdsStr = localStorage.getItem('seen_notif_ids');
         const seenIds = seenIdsStr ? JSON.parse(seenIdsStr) : [];
-        
+
         if (!seenIds.includes(id)) {
             const updated = [...seenIds, id];
             localStorage.setItem('seen_notif_ids', JSON.stringify(updated));
         }
-        
+
         // Immediately refresh the list to 'refill' from more unseen notifications if available
         fetchUnseenNotifications();
     };
@@ -85,10 +90,10 @@ export default function GlobalNotificationToast() {
         const seenIdsStr = localStorage.getItem('seen_notif_ids');
         const seenIds = seenIdsStr ? JSON.parse(seenIdsStr) : [];
         const currentVisibleIds = notifications.map(n => n._id);
-        
+
         const updated = Array.from(new Set([...seenIds, ...currentVisibleIds]));
         localStorage.setItem('seen_notif_ids', JSON.stringify(updated));
-        
+
         setNotifications([]);
         router.push('/notifications');
     };
@@ -107,13 +112,13 @@ export default function GlobalNotificationToast() {
                         exit={{ opacity: 0, x: 100, scale: 0.8 }}
                         className="pointer-events-auto"
                     >
-                        <div 
+                        <div
                             onClick={() => handleClick(notif._id)}
                             className="bg-white border-2 border-primary/20 rounded-[1.5rem] shadow-[0_15px_40px_rgba(0,0,0,0.12)] p-4 cursor-pointer group hover:border-primary/40 transition-all duration-300 overflow-hidden relative"
                         >
                             {/* Decorative flare */}
                             <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
-                            
+
                             <div className="flex gap-3 relative z-10">
                                 <div className="flex-shrink-0">
                                     <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary relative">
@@ -121,7 +126,7 @@ export default function GlobalNotificationToast() {
                                         <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></div>
                                     </div>
                                 </div>
-                                
+
                                 <div className="flex-grow min-w-0">
                                     <div className="flex items-center gap-2 mb-0.5">
                                         <span className="text-[9px] font-black uppercase tracking-[0.2em] text-primary flex items-center gap-1">
@@ -136,8 +141,8 @@ export default function GlobalNotificationToast() {
                                         {lang === 'mr' && notif.messageMr ? notif.messageMr : notif.message}
                                     </p>
                                 </div>
-                                
-                                <button 
+
+                                <button
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleDismiss(notif._id);
