@@ -59,6 +59,12 @@ const UserSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+  familyMembers: [{
+    name: { type: String, required: true },
+    mobile: String,
+    email: String,
+    dob: String,
+  }],
 }, { timestamps: true });
 
 delete mongoose.models.User;

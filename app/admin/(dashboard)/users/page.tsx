@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import {
-  Users, Search, Filter,
+  Users, Search, Filter, Phone,
   Mail, Calendar, MapPin, UserCheck, Trash2, Edit, Eye, X, CheckCircle2, AlertCircle, ShieldCheck, UserX, Clock
 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -394,6 +394,38 @@ export default function AdminUsersPage() {
                   <p className="text-sm font-bold text-secondary">{selectedUser.createdAt ? format(new Date(selectedUser.createdAt), 'dd MMM yyyy') : 'N/A'}</p>
                 </div>
               </div>
+
+              {selectedUser.familyMembers && selectedUser.familyMembers.length > 0 && (
+                <div className="pt-4 border-t border-border">
+                  <h4 className="text-sm font-black text-secondary mb-3 flex items-center gap-2">
+                    <Users className="w-4 h-4 text-primary" /> Family Members
+                  </h4>
+                  <div className="space-y-3 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                    {selectedUser.familyMembers.map((member: any, index: number) => (
+                      <div key={index} className="bg-muted/10 p-3 rounded-xl border border-border/50">
+                        <h5 className="font-bold text-secondary text-xs mb-1.5">{member.name}</h5>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {member.mobile && (
+                            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium">
+                              <Phone className="w-3 h-3 text-primary/60" /> {member.mobile}
+                            </div>
+                          )}
+                          {member.email && (
+                            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium">
+                              <Mail className="w-3 h-3 text-primary/60" /> {member.email}
+                            </div>
+                          )}
+                          {member.dob && (
+                            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium">
+                              <Calendar className="w-3 h-3 text-primary/60" /> {new Date(member.dob).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="pt-6">
                 <button

@@ -33,7 +33,7 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { name, phone, email, dob, cityOrVillage, pincode } = body;
+    const { name, phone, email, dob, cityOrVillage, pincode, familyMembers } = body;
 
     if (!name || !email) {
       return NextResponse.json({ message: 'Name and Email are required' }, { status: 400 });
@@ -44,6 +44,7 @@ export async function PUT(request: Request) {
     if (dob !== undefined) updateData.dob = dob;
     if (cityOrVillage !== undefined) updateData.cityOrVillage = cityOrVillage;
     if (pincode !== undefined) updateData.pincode = pincode;
+    if (familyMembers !== undefined) updateData.familyMembers = familyMembers;
 
     const user = await User.findByIdAndUpdate(
       decoded.id,

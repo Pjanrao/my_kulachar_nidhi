@@ -11,6 +11,15 @@ interface User {
   pincode?: string;
   totalDonations?: number;
   createdAt?: string;
+  familyMembers?: FamilyMember[];
+}
+
+interface FamilyMember {
+  _id?: string;
+  name: string;
+  mobile?: string;
+  email?: string;
+  dob?: string;
 }
 
 interface AuthState {

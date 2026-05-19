@@ -7,7 +7,7 @@ import { RootState } from '@/redux/store';
 import { updateUser } from '@/redux/slices/authSlice';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { User, Mail, Phone, Shield, IndianRupee, Heart, MapPin, Calendar, Edit3, X, Check, Loader2, Lock, Cake, Home } from 'lucide-react';
+import { User, Mail, Phone, Shield, IndianRupee, Heart, MapPin, Calendar, Edit3, X, Check, Loader2, Lock, Cake, Home, Users, Plus, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 
@@ -18,7 +18,7 @@ export default function ProfilePage() {
   const dispatch = useDispatch();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({ name: '', phone: '', email: '', dob: '', cityOrVillage: '', pincode: '' });
+  const [editData, setEditData] = useState({ name: '', phone: '', email: '', dob: '', cityOrVillage: '', pincode: '', familyMembers: [] as any[] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -40,7 +40,8 @@ export default function ProfilePage() {
         email: user.email || '',
         dob: user.dob || '',
         cityOrVillage: user.cityOrVillage || '',
-        pincode: user.pincode || ''
+        pincode: user.pincode || '',
+        familyMembers: user.familyMembers || []
       });
     }
   }, [user]);
@@ -59,7 +60,8 @@ export default function ProfilePage() {
         email: editData.email,
         dob: editData.dob,
         cityOrVillage: editData.cityOrVillage,
-        pincode: editData.pincode
+        pincode: editData.pincode,
+        familyMembers: editData.familyMembers
       }, config);
 
       if (response.data.success) {
@@ -69,7 +71,8 @@ export default function ProfilePage() {
           email: editData.email,
           dob: editData.dob,
           cityOrVillage: editData.cityOrVillage,
-          pincode: editData.pincode
+          pincode: editData.pincode,
+          familyMembers: editData.familyMembers
         }));
         setIsEditing(false);
       }
@@ -211,6 +214,42 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
+
+            {/* Family Information */}
+            {user.familyMembers && user.familyMembers.length > 0 && (
+              <div className="spiritual-card p-8">
+                <div className="flex items-center justify-between mb-6 border-b border-border pb-4">
+                  <h2 className="text-xl font-black text-secondary flex items-center gap-2">
+                    <Users className="w-5 h-5 text-primary" /> Family Members
+                  </h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {user.familyMembers.map((member: any, index: number) => (
+                    <div key={index} className="bg-muted/10 p-4 rounded-2xl border border-border/50">
+                      <h3 className="font-bold text-secondary text-sm mb-2">{member.name}</h3>
+                      <div className="space-y-1.5">
+                        {member.mobile && (
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Phone className="w-3.5 h-3.5 text-primary/70" /> {member.mobile}
+                          </div>
+                        )}
+                        {member.email && (
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Mail className="w-3.5 h-3.5 text-primary/70" /> {member.email}
+                          </div>
+                        )}
+                        {member.dob && (
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Cake className="w-3.5 h-3.5 text-primary/70" /> 
+                            {new Date(member.dob).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Stats Sidebar */}
@@ -434,6 +473,99 @@ export default function ProfilePage() {
                           readOnly
                           className="w-full bg-muted/40 border border-border rounded-xl pl-10 pr-3 py-2.5 outline-none font-bold text-muted-foreground text-sm cursor-not-allowed select-none"
                         />
+                      </div>
+                    </div>
+
+                    {/* Family Members Section */}
+                    <div className="sm:col-span-2 pt-4 border-t border-border mt-2">
+                      <div className="flex items-center justify-between mb-4">
+                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-1">
+                          Family Members <Users className="w-3 h-3 ml-1" />
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => setEditData(prev => ({ ...prev, familyMembers: [...prev.familyMembers, { name: '', mobile: '', email: '', dob: '' }] }))}
+                          className="flex items-center gap-1 text-xs font-bold text-primary hover:text-primary/80 transition-colors"
+                        >
+                          <Plus className="w-3 h-3" /> Add Member
+                        </button>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        {editData.familyMembers.map((member, index) => (
+                          <div key={index} className="bg-muted/20 p-4 rounded-2xl border border-border/50 relative">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newMembers = [...editData.familyMembers];
+                                newMembers.splice(index, 1);
+                                setEditData(prev => ({ ...prev, familyMembers: newMembers }));
+                              }}
+                              className="absolute top-4 right-4 text-red-500 hover:text-red-700 transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pr-8">
+                              <div>
+                                <input
+                                  type="text"
+                                  value={member.name}
+                                  onChange={(e) => {
+                                    const newMembers = [...editData.familyMembers];
+                                    newMembers[index].name = e.target.value;
+                                    setEditData(prev => ({ ...prev, familyMembers: newMembers }));
+                                  }}
+                                  className="w-full bg-white border border-border rounded-lg px-3 py-2 outline-none focus:border-primary text-xs font-bold"
+                                  placeholder="Name (Required)"
+                                  required
+                                />
+                              </div>
+                              <div>
+                                <input
+                                  type="text"
+                                  value={member.mobile}
+                                  onChange={(e) => {
+                                    const newMembers = [...editData.familyMembers];
+                                    newMembers[index].mobile = e.target.value.replace(/\D/g, '');
+                                    setEditData(prev => ({ ...prev, familyMembers: newMembers }));
+                                  }}
+                                  className="w-full bg-white border border-border rounded-lg px-3 py-2 outline-none focus:border-primary text-xs font-bold"
+                                  placeholder="Mobile Number"
+                                />
+                              </div>
+                              <div>
+                                <input
+                                  type="email"
+                                  value={member.email}
+                                  onChange={(e) => {
+                                    const newMembers = [...editData.familyMembers];
+                                    newMembers[index].email = e.target.value;
+                                    setEditData(prev => ({ ...prev, familyMembers: newMembers }));
+                                  }}
+                                  className="w-full bg-white border border-border rounded-lg px-3 py-2 outline-none focus:border-primary text-xs font-bold"
+                                  placeholder="Email Address"
+                                />
+                              </div>
+                              <div>
+                                <input
+                                  type="date"
+                                  value={member.dob}
+                                  onChange={(e) => {
+                                    const newMembers = [...editData.familyMembers];
+                                    newMembers[index].dob = e.target.value;
+                                    setEditData(prev => ({ ...prev, familyMembers: newMembers }));
+                                  }}
+                                  className="w-full bg-white border border-border rounded-lg px-3 py-2 outline-none focus:border-primary text-xs font-bold text-muted-foreground"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        {editData.familyMembers.length === 0 && (
+                          <div className="text-center py-4 bg-muted/20 border border-dashed border-border rounded-xl">
+                            <p className="text-xs text-muted-foreground font-medium">No family members added yet.</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
