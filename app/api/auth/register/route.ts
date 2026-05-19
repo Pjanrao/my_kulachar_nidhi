@@ -7,7 +7,7 @@ import Notification from '@/models/Notification';
 export async function POST(req: Request) {
   try {
     await dbConnect();
-    const { name, email, password, phone, referralCode } = await req.json();
+    const { name, email, password, phone, dob, cityOrVillage, pincode, referralCode } = await req.json();
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -50,6 +50,9 @@ export async function POST(req: Request) {
       email,
       password: hashedPassword,
       phone,
+      dob,
+      cityOrVillage,
+      pincode,
       role: 'user', // Default role for registration
       referredBy,
       approvalStatus: 'approved',

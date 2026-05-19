@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { UserPlus, Mail, Lock, User, Phone, AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
+import { UserPlus, Mail, Lock, User, Phone, AlertCircle, CheckCircle2, Eye, EyeOff, Cake, Home, MapPin } from 'lucide-react';
 
 function RegisterForm() {
   const router = useRouter();
@@ -15,6 +15,9 @@ function RegisterForm() {
     email: '',
     password: '',
     phone: '',
+    dob: '',
+    cityOrVillage: '',
+    pincode: '',
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -56,7 +59,7 @@ function RegisterForm() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#FFFDF9] px-4 py-12">
-      <div className="max-w-md w-full spiritual-card p-8 space-y-8 bg-white border border-[#E8E2D9] shadow-xl">
+      <div className="max-w-3xl w-full spiritual-card p-8 sm:p-10 space-y-8 bg-white border border-[#E8E2D9] shadow-2xl rounded-[2rem]">
         <div className="text-center">
           <div className="mx-auto h-16 w-16 bg-[#E65100]/10 rounded-full flex items-center justify-center mb-4">
             <UserPlus className="h-8 w-8 text-[#E65100]" />
@@ -90,8 +93,8 @@ function RegisterForm() {
         )}
 
         {!success && (
-          <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-            <div className="space-y-4">
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
               <div>
                 <label className="block text-xs font-black text-[#4E342E] uppercase tracking-wider mb-2">Full Name</label>
                 <div className="relative">
@@ -141,6 +144,54 @@ function RegisterForm() {
               </div>
 
               <div>
+                <label className="block text-xs font-black text-[#4E342E] uppercase tracking-wider mb-2">Date of Birth</label>
+                <div className="relative">
+                  <Cake className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#8B7361]/50" />
+                  <input
+                    name="dob"
+                    type="date"
+                    required
+                    className="spiritual-input !pl-12 cursor-pointer text-secondary"
+                    value={formData.dob}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-[#4E342E] uppercase tracking-wider mb-2">City / Village</label>
+                <div className="relative">
+                  <Home className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#8B7361]/50" />
+                  <input
+                    name="cityOrVillage"
+                    type="text"
+                    required
+                    className="spiritual-input !pl-12"
+                    placeholder="Enter your City or Village"
+                    value={formData.cityOrVillage}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-[#4E342E] uppercase tracking-wider mb-2">Pincode</label>
+                <div className="relative">
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#8B7361]/50" />
+                  <input
+                    name="pincode"
+                    type="text"
+                    maxLength={6}
+                    required
+                    className="spiritual-input !pl-12"
+                    placeholder="Enter 6-digit Pincode"
+                    value={formData.pincode}
+                    onChange={(e) => setFormData({ ...formData, pincode: e.target.value.replace(/\D/g, '') })}
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-2">
                 <label className="block text-xs font-black text-[#4E342E] uppercase tracking-wider mb-2">Password</label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#8B7361]/50" />
@@ -168,10 +219,10 @@ function RegisterForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="spiritual-button w-full h-12 text-base"
+                className="spiritual-button w-full h-12 text-base font-black uppercase tracking-widest"
               >
                 {loading ? (
-                  <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto"></div>
                 ) : (
                   'Create Account'
                 )}

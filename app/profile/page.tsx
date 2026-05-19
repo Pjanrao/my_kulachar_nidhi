@@ -7,7 +7,7 @@ import { RootState } from '@/redux/store';
 import { updateUser } from '@/redux/slices/authSlice';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { User, Mail, Phone, Shield, IndianRupee, Heart, MapPin, Calendar, Edit3, X, Check, Loader2, Lock } from 'lucide-react';
+import { User, Mail, Phone, Shield, IndianRupee, Heart, MapPin, Calendar, Edit3, X, Check, Loader2, Lock, Cake, Home } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 
@@ -18,7 +18,7 @@ export default function ProfilePage() {
   const dispatch = useDispatch();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({ name: '', phone: '', email: '', location: '' });
+  const [editData, setEditData] = useState({ name: '', phone: '', email: '', dob: '', cityOrVillage: '', pincode: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -38,7 +38,9 @@ export default function ProfilePage() {
         name: user.name || '',
         phone: user.phone || '',
         email: user.email || '',
-        location: user.location || 'Mumbai, MH'
+        dob: user.dob || '',
+        cityOrVillage: user.cityOrVillage || '',
+        pincode: user.pincode || ''
       });
     }
   }, [user]);
@@ -55,7 +57,9 @@ export default function ProfilePage() {
         name: editData.name,
         phone: editData.phone,
         email: editData.email,
-        location: editData.location
+        dob: editData.dob,
+        cityOrVillage: editData.cityOrVillage,
+        pincode: editData.pincode
       }, config);
 
       if (response.data.success) {
@@ -63,7 +67,9 @@ export default function ProfilePage() {
           name: editData.name,
           phone: editData.phone,
           email: editData.email,
-          location: editData.location
+          dob: editData.dob,
+          cityOrVillage: editData.cityOrVillage,
+          pincode: editData.pincode
         }));
         setIsEditing(false);
       }
@@ -87,6 +93,14 @@ export default function ProfilePage() {
       month: 'long',
       day: 'numeric',
     });
+
+  const formattedDOB = user.dob
+    ? new Date(user.dob + 'T00:00:00').toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+    : 'Not Provided';
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDF9]">
@@ -127,7 +141,7 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                   <div>
                     <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Email Identity</label>
-                    <div className="flex items-center gap-3 text-secondary font-bold">
+                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
                       <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
                         <Mail className="w-4 h-4 text-primary" />
                       </div>
@@ -137,7 +151,7 @@ export default function ProfilePage() {
 
                   <div>
                     <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Contact Number</label>
-                    <div className="flex items-center gap-3 text-secondary font-bold">
+                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
                       <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
                         <Phone className="w-4 h-4 text-primary" />
                       </div>
@@ -146,8 +160,18 @@ export default function ProfilePage() {
                   </div>
 
                   <div>
+                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Date of Birth</label>
+                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
+                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                        <Cake className="w-4 h-4 text-primary" />
+                      </div>
+                      {formattedDOB}
+                    </div>
+                  </div>
+
+                  <div>
                     <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Role Access</label>
-                    <div className="flex items-center gap-3 text-secondary font-bold">
+                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
                       <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
                         <Shield className="w-4 h-4 text-primary" />
                       </div>
@@ -155,9 +179,29 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
+                  <div>
+                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">City / Village</label>
+                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
+                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                        <Home className="w-4 h-4 text-primary" />
+                      </div>
+                      {user.cityOrVillage || 'Not Provided'}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Pincode</label>
+                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
+                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                        <MapPin className="w-4 h-4 text-primary" />
+                      </div>
+                      {user.pincode || 'Not Provided'}
+                    </div>
+                  </div>
+
                   <div className="sm:col-span-2">
                     <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Joined Date</label>
-                    <div className="flex items-center gap-3 text-secondary font-bold">
+                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
                       <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
                         <Calendar className="w-4 h-4 text-primary" />
                       </div>
@@ -304,19 +348,53 @@ export default function ProfilePage() {
                       </div>
                     </div>
 
-                    {/* Location */}
+                    {/* Date of Birth */}
                     <div>
-                      <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1.5">Location</label>
+                      <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1.5">Date of Birth</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Cake className="w-4 h-4 text-muted-foreground" />
+                        </div>
+                        <input
+                          type="date"
+                          value={editData.dob}
+                          onChange={(e) => setEditData({ ...editData, dob: e.target.value })}
+                          className="w-full bg-white border border-border rounded-xl pl-10 pr-3 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-bold text-secondary text-sm shadow-sm cursor-pointer"
+                        />
+                      </div>
+                    </div>
+
+                    {/* City / Village */}
+                    <div>
+                      <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1.5">City / Village</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Home className="w-4 h-4 text-muted-foreground" />
+                        </div>
+                        <input
+                          type="text"
+                          value={editData.cityOrVillage}
+                          onChange={(e) => setEditData({ ...editData, cityOrVillage: e.target.value })}
+                          className="w-full bg-white border border-border rounded-xl pl-10 pr-3 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-bold text-secondary text-sm shadow-sm"
+                          placeholder="Enter City or Village"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Pincode */}
+                    <div>
+                      <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1.5">Pincode</label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                           <MapPin className="w-4 h-4 text-muted-foreground" />
                         </div>
                         <input
                           type="text"
-                          value={editData.location}
-                          onChange={(e) => setEditData({ ...editData, location: e.target.value })}
+                          maxLength={6}
+                          value={editData.pincode}
+                          onChange={(e) => setEditData({ ...editData, pincode: e.target.value.replace(/\D/g, '') })}
                           className="w-full bg-white border border-border rounded-xl pl-10 pr-3 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-bold text-secondary text-sm shadow-sm"
-                          placeholder="E.g. Mumbai, MH"
+                          placeholder="Enter 6-digit Pincode"
                         />
                       </div>
                     </div>

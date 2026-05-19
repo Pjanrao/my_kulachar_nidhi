@@ -65,6 +65,9 @@ export async function POST(req: Request) {
         email: user.email,
         role: user.role,
         phone: user.phone,
+        dob: user.dob,
+        cityOrVillage: user.cityOrVillage,
+        pincode: user.pincode,
         totalDonations: user.totalDonations,
       },
     });
@@ -81,10 +84,10 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error('CRITICAL Login error:', error);
     return NextResponse.json(
-      { 
+      {
         message: 'Server error during login',
         error: error.message,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
       },
       { status: 500 }
     );
