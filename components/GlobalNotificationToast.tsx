@@ -14,7 +14,9 @@ export default function GlobalNotificationToast() {
 
     const fetchUnseenNotifications = async () => {
         try {
-            const res = await fetch(`/api/notifications?t=${Date.now()}`);
+            const res = await fetch(`/api/notifications?t=${Date.now()}`, {
+                credentials: 'include',
+            });
             if (!res.ok) return;
             const data = await res.json();
 

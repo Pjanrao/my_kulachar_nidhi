@@ -61,6 +61,7 @@ export async function POST(req: Request) {
     // Create Notification
     try {
       await Notification.create({
+        role: 'admin',
         title: 'New Devotee Registered',
         titleMr: 'नवीन भक्ताची नोंदणी झाली',
         message: `${user.name} (${user.email}) has joined the Kulachar Nidhi community.`,

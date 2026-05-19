@@ -10,9 +10,10 @@ import { useLanguage } from '@/lib/LanguageContext';
 import {
   Languages, Phone, Clock, MapPin, Menu, X,
   HandHeart, Sparkles, User, History, LogOut, LayoutDashboard, Users2, ChevronDown,
-  Flame, Building2, Info, Receipt
+  Flame, Building2, Info, Receipt, Bell
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import NotificationDropdown from './NotificationDropdown';
 
 export default function Navbar() {
   const { lang, setLang, t } = useLanguage();
@@ -206,6 +207,8 @@ export default function Navbar() {
                   <HandHeart className="w-4 h-4" /> {t('nav.donate')}
                 </Link>
 
+                <NotificationDropdown />
+
                 {mounted && (
                   isAuthenticated ? (
                     <div className="relative">
@@ -241,6 +244,9 @@ export default function Navbar() {
                               <Link href="/donations" className="flex items-center gap-3 px-4 py-2.5 text-sm text-secondary hover:bg-muted font-bold transition-colors">
                                 <History className="w-4 h-4 text-primary" /> Donation History
                               </Link>
+                              <Link href="/notifications" className="flex items-center gap-3 px-4 py-2.5 text-sm text-secondary hover:bg-muted font-bold transition-colors">
+                                <Bell className="w-4 h-4 text-primary" /> Notifications
+                              </Link>
                               <div className="border-t border-border/50 mt-1 pt-1">
                                 <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 font-bold transition-colors">
                                   <LogOut className="w-4 h-4" /> Logout
@@ -266,6 +272,7 @@ export default function Navbar() {
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center gap-4">
+              <NotificationDropdown />
               {mounted && !isAuthenticated && (
                 <Link href="/login" className="text-secondary p-1">
                   <User className="w-6 h-6" />

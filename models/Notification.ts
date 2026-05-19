@@ -2,6 +2,15 @@ import mongoose from 'mongoose';
 
 const NotificationSchema = new mongoose.Schema(
     {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        role: {
+            type: String,
+            enum: ['user', 'admin'],
+            default: 'user',
+        },
         title: String,
         titleMr: String,
         message: String,
@@ -11,6 +20,8 @@ const NotificationSchema = new mongoose.Schema(
             enum: ['donation', 'event', 'general'],
             default: 'general',
         },
+        amount: Number,
+        language: String,
         isRead: {
             type: Boolean,
             default: false,

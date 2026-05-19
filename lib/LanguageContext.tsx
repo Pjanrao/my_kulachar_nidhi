@@ -4,7 +4,6 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 
 import en from './translations/en.json';
 import mr from './translations/mr.json';
-import GlobalNotificationToast from '@/components/GlobalNotificationToast';
 
 type Lang = 'en' | 'mr';
 
@@ -37,7 +36,6 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   return (
     <LanguageContext.Provider value={{ lang, setLang, t }}>
-      <GlobalNotificationToast />
       {children}
     </LanguageContext.Provider>
   );

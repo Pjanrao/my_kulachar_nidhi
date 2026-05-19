@@ -33,15 +33,31 @@ export async function POST(req: Request) {
       }),
     });
 
-    // Create Notification
+    // Create Admin Notification
     try {
       await Notification.create({
+        role: 'admin',
         title: 'New Donation Received',
         titleMr: 'नवीन देणगी प्राप्त झाली',
-        message: `${donation.donorName} donated ₹${donation.amount} for ${donation.purpose}.`,
-        messageMr: `${donation.donorName} यांनी ${donation.purpose} साठी ₹${donation.amount} दान केले.`,
+        message: `User ${donation.donorName} donated ₹${donation.amount} to Kulachar Nidhi.`,
+        messageMr: `${donation.donorName} यांनी कुलाचार निधीला ₹${donation.amount} देणगी दिली.`,
         type: 'donation',
+        amount: donation.amount,
       });
+
+      // Create User Notification if logged in
+      if (userId) {
+        await Notification.create({
+          userId: userId,
+          role: 'user',
+          title: 'Donation Successful',
+          titleMr: 'देणगी यशस्वी',
+          message: `🙏 Kulachar Nidhi has successfully received your donation of ₹${donation.amount}. Thank you for your contribution and support.`,
+          messageMr: `🙏 कुलाचार निधीला तुमचे ₹${donation.amount} चे देणगी यशस्वीरित्या प्राप्त झाले आहे. आपल्या सहकार्याबद्दल धन्यवाद.`,
+          type: 'donation',
+          amount: donation.amount,
+        });
+      }
     } catch (notifError) {
       console.error('Failed to create notification:', notifError);
     }

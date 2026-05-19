@@ -42,7 +42,7 @@ export default function AdminNotificationsPage() {
     // FETCH
     const fetchData = async () => {
         try {
-            const res = await fetch('/api/notifications', {
+            const res = await fetch('/api/notifications?admin=true', {
                 credentials: 'include',
             });
             if (!res.ok) throw new Error('Failed to fetch');
@@ -66,11 +66,16 @@ export default function AdminNotificationsPage() {
         if (!form.title || !form.message) return;
 
         try {
+            const payload = {
+                ...form,
+                role: 'user', // By default broadcasts from admin are for users
+            };
+
             const res = await fetch('/api/notifications', {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
+                body: JSON.stringify(payload),
             });
 
             if (!res.ok) throw new Error('Failed');
@@ -87,7 +92,7 @@ export default function AdminNotificationsPage() {
     // DELETE
     const handleDelete = async (id: string) => {
         try {
-            const res = await fetch(`/api/notifications/${id}`, {
+            const res = await fetch(`/api/notifications/${id}?admin=true`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -102,7 +107,7 @@ export default function AdminNotificationsPage() {
     // MARK READ
     const markRead = async (id: string) => {
         try {
-            const res = await fetch(`/api/notifications/${id}`, {
+            const res = await fetch(`/api/notifications/${id}?admin=true`, {
                 method: 'PATCH',
                 credentials: 'include',
             });
@@ -116,7 +121,7 @@ export default function AdminNotificationsPage() {
     // MARK ALL READ
     const markAllRead = async () => {
         try {
-            const res = await fetch('/api/notifications', {
+            const res = await fetch('/api/notifications?admin=true', {
                 method: 'PATCH',
                 credentials: 'include',
             });
@@ -132,7 +137,7 @@ export default function AdminNotificationsPage() {
     const clearAll = async () => {
         if (!confirm('Are you sure you want to delete all notifications? This cannot be undone.')) return;
         try {
-            const res = await fetch('/api/notifications', {
+            const res = await fetch('/api/notifications?admin=true', {
                 method: 'DELETE',
                 credentials: 'include',
             });

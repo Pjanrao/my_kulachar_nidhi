@@ -4,11 +4,39 @@ import Notification from '@/models/Notification';
 import { getDataFromToken } from '@/lib/auth';
 import { hasAdminAccess } from '@/lib/adminAuth';
 
-// GET all notifications
-export async function GET() {
-    await dbConnect();
-    const data = await Notification.find().sort({ createdAt: -1 });
-    return NextResponse.json(data);
+// GET notifications
+export async function GET(req: Request) {
+    try {
+        await dbConnect();
+        const decoded = await getDataFromToken();
+        const url = new URL(req.url);
+        const isAdminPanel = url.searchParams.get('admin') === 'true';
+
+        let query: any = {};
+
+        if (decoded) {
+            if (hasAdminAccess(decoded) && isAdminPanel) {
+                // Admin dashboard fetching notifications
+                query = { role: 'admin' };
+            } else {
+                // Logged in user fetching notifications
+                query = {
+                    $or: [
+                        { userId: decoded.id },
+                        { type: { $in: ['general', 'event'] }, role: 'user' } // Public notifications
+                    ]
+                };
+            }
+        } else {
+            // Not logged in, only public general/event notifications
+            query = { type: { $in: ['general', 'event'] }, role: 'user' };
+        }
+
+        const data = await Notification.find(query).sort({ createdAt: -1 });
+        return NextResponse.json(data);
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 }
 
 // CREATE notification
@@ -22,15 +50,26 @@ export async function POST(req: Request) {
 }
 
 // MARK ALL READ
-export async function PATCH() {
+export async function PATCH(req: Request) {
     try {
         await dbConnect();
         const decoded = await getDataFromToken();
-        if (!hasAdminAccess(decoded)) {
+        const url = new URL(req.url);
+        const isAdminPanel = url.searchParams.get('admin') === 'true';
+
+        if (!decoded) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        await Notification.updateMany({ isRead: false }, { isRead: true });
+        let query: any = { isRead: false };
+
+        if (hasAdminAccess(decoded) && isAdminPanel) {
+            query.role = 'admin';
+        } else {
+            query.userId = decoded.id;
+        }
+
+        await Notification.updateMany(query, { isRead: true });
         return NextResponse.json({ success: true });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
@@ -38,15 +77,26 @@ export async function PATCH() {
 }
 
 // CLEAR ALL
-export async function DELETE() {
+export async function DELETE(req: Request) {
     try {
         await dbConnect();
         const decoded = await getDataFromToken();
-        if (!hasAdminAccess(decoded)) {
+        const url = new URL(req.url);
+        const isAdminPanel = url.searchParams.get('admin') === 'true';
+
+        if (!decoded) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        await Notification.deleteMany({});
+        let query: any = {};
+
+        if (hasAdminAccess(decoded) && isAdminPanel) {
+            query.role = 'admin';
+        } else {
+            query.userId = decoded.id;
+        }
+
+        await Notification.deleteMany(query);
         return NextResponse.json({ success: true });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
