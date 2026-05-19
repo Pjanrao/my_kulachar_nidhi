@@ -7,7 +7,7 @@ import { RootState } from '@/redux/store';
 import { updateUser } from '@/redux/slices/authSlice';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { User, Mail, Phone, Shield, IndianRupee, Heart, MapPin, Calendar, Edit3, X, Check, Loader2, Lock, Cake, Home, Users, Plus, Trash2 } from 'lucide-react';
+import { User, Mail, Phone, Shield, IndianRupee, Heart, MapPin, Calendar, Edit3, X, Check, Loader2, Lock, Cake, Home, Users, Plus, Trash2, Bell } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 
@@ -21,6 +21,16 @@ export default function ProfilePage() {
   const [editData, setEditData] = useState({ name: '', phone: '', email: '', dob: '', cityOrVillage: '', pincode: '', familyMembers: [] as any[] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState<'profile' | 'notifications'>('profile');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('tab') === 'notifications') {
+        setActiveTab('notifications');
+      }
+    }
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -109,7 +119,7 @@ export default function ProfilePage() {
     <div className="min-h-screen flex flex-col bg-[#FFFDF9]">
       <Navbar />
 
-      <main className="flex-grow container mx-auto px-4 py-12 max-w-4xl">
+      <main className="flex-grow container mx-auto px-4 py-12 max-w-6xl">
         <div className="mb-8 flex flex-col md:flex-row items-center gap-6">
           <div className="w-24 h-24 rounded-3xl bg-primary flex items-center justify-center p-0.5 shadow-2xl">
             <div className="w-full h-full rounded-[20px] bg-white flex items-center justify-center relative overflow-hidden group">
@@ -133,6 +143,27 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Vertical Sidebar Tabs */}
+          <div className="w-full md:w-64 flex flex-col gap-3 shrink-0">
+            <button 
+              onClick={() => { setActiveTab('profile'); window.history.pushState({}, '', '/profile'); }} 
+              className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all w-full text-left ${activeTab === 'profile' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'bg-white text-muted-foreground hover:bg-muted border border-border'}`}
+            >
+              <User className="w-5 h-5 shrink-0" /> Profile
+            </button>
+            <button 
+              onClick={() => { setActiveTab('notifications'); window.history.pushState({}, '', '/profile?tab=notifications'); }} 
+              className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all w-full text-left ${activeTab === 'notifications' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'bg-white text-muted-foreground hover:bg-muted border border-border'}`}
+            >
+              <Bell className="w-5 h-5 shrink-0" /> Notifications
+            </button>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="flex-1 min-w-0">
+
+        {activeTab === 'profile' ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Account Overview */}
           <div className="md:col-span-2 space-y-6">
@@ -293,6 +324,11 @@ export default function ProfilePage() {
                 </li>
               </ul>
             </div>
+          </div>
+        </div>
+        ) : (
+          <NotificationsTab />
+        )}
           </div>
         </div>
 
@@ -598,3 +634,90 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+const NotificationsTab = () => {
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await fetch(`/api/notifications?t=${Date.now()}`, {
+          credentials: 'include',
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        setNotifications(data);
+        
+        // Mark all as seen
+        const seenIdsStr = localStorage.getItem('seen_notif_ids');
+        const seenIds = seenIdsStr ? JSON.parse(seenIdsStr) : [];
+        const currentIds = data.map((n: any) => n._id);
+        const newSeenIds = Array.from(new Set([...seenIds, ...currentIds]));
+        localStorage.setItem('seen_notif_ids', JSON.stringify(newSeenIds));
+        
+        window.dispatchEvent(new Event('notifications_seen'));
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNotifications();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="spiritual-card p-12 flex flex-col items-center justify-center min-h-[300px]">
+        <Loader2 className="w-8 h-8 text-primary animate-spin mb-4" />
+        <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Loading notifications...</p>
+      </div>
+    );
+  }
+
+  if (notifications.length === 0) {
+    return (
+      <div className="spiritual-card p-12 flex flex-col items-center justify-center text-center min-h-[300px]">
+        <div className="w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mb-6">
+          <Bell className="w-10 h-10 text-muted-foreground/30" />
+        </div>
+        <h3 className="text-xl font-black text-secondary">No Notifications</h3>
+        <p className="text-sm font-bold text-muted-foreground mt-2">You're all caught up!</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {notifications.map((notif: any) => (
+        <div key={notif._id} className="spiritual-card p-6 hover:shadow-md transition-shadow group">
+          <div className="flex gap-5">
+            <div className="shrink-0 mt-1">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                {notif.type === 'DONATION_SUCCESS' ? <Heart className="w-6 h-6" /> : <Bell className="w-6 h-6" />}
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2.5 py-1 rounded-full">
+                  {notif.type}
+                </span>
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+                  <Calendar className="w-3 h-3" />
+                  {new Date(notif.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                </span>
+              </div>
+              <h3 className="text-lg font-black text-secondary mb-1.5">
+                {notif.title}
+              </h3>
+              <p className="text-sm font-bold text-muted-foreground leading-relaxed">
+                {notif.message}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+

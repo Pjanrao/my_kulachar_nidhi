@@ -37,6 +37,7 @@ export default function DonationForm() {
     countryCode: '+91',
     mobileNumber: '',
     address: '',
+    occasionDate: '',
   });
 
   useEffect(() => {
@@ -107,6 +108,7 @@ export default function DonationForm() {
       countryCode: '+91',
       mobileNumber: user?.phone?.slice(-10) || '',
       address: '',
+      occasionDate: '',
     });
   };
 
@@ -126,6 +128,7 @@ export default function DonationForm() {
         amount: Number(formData.amount),
         reason: formData.purpose || formData.occasion || 'General Donation',
         mobileNumber: formData.countryCode + formData.mobileNumber,
+        occasionDate: formData.occasionDate ? new Date(formData.occasionDate) : undefined,
       }, config);
 
       if (res.data.success) {
@@ -441,6 +444,18 @@ export default function DonationForm() {
                 {occasions.map((o, i) => <option key={i} value={o}>{o}</option>)}
               </select>
             </div>
+
+            {formData.occasion && (
+              <div className="space-y-2">
+                <label className="text-xs font-black text-secondary uppercase tracking-tight">Occasion Date</label>
+                <input
+                  type="date"
+                  className="spiritual-input h-12 w-full px-4 font-bold text-sm"
+                  value={formData.occasionDate}
+                  onChange={(e) => setFormData({ ...formData, occasionDate: e.target.value })}
+                />
+              </div>
+            )}
 
             <div className="space-y-2">
               <label className="text-xs font-black text-secondary uppercase tracking-tight">{t('donation.amount')} (₹) <span className="text-primary">*</span></label>

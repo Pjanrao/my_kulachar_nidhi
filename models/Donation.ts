@@ -23,6 +23,7 @@ const DonationSchema = new mongoose.Schema({
   },
   purpose: String,
   occasion: String,
+  occasionDate: Date,
   reason: {
     type: String,
     required: [true, 'Please provide reason'],

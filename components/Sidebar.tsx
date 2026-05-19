@@ -15,11 +15,6 @@ export default function Sidebar() {
       href: '/festivals'
     },
     {
-      label: lang === 'mr' ? 'बातमी आणि घोषणा' : 'News & Announcements',
-      icon: Newspaper,
-      href: '/notifications'
-    },
-    {
       label: lang === 'mr' ? 'मंदिर व्हिडिओ' : 'Temple Videos',
       icon: Video,
       href: '/gallery/videos'

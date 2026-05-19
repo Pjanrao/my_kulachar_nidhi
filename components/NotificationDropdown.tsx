@@ -30,8 +30,12 @@ export default function NotificationDropdown() {
                 const unseen = data.filter((n: any) => !seenIds.includes(n._id));
                 setUnseenCount(unseen.length);
                 
-                // Show up to 3 latest unseen notifications
-                setNotifications(unseen.slice(0, 3));
+                // Only show unseen notifications in the dropdown, up to 20
+                const formattedNotifs = unseen.slice(0, 20).map((n: any) => ({
+                    ...n,
+                    isUnseen: true
+                }));
+                setNotifications(formattedNotifs);
             } else {
                 setNotifications([]);
                 setUnseenCount(0);
@@ -44,7 +48,16 @@ export default function NotificationDropdown() {
     useEffect(() => {
         fetchNotifications();
         const interval = setInterval(fetchNotifications, 10000);
-        return () => clearInterval(interval);
+        
+        const handleSeenEvent = () => {
+            fetchNotifications();
+        };
+        window.addEventListener('notifications_seen', handleSeenEvent);
+        
+        return () => {
+            clearInterval(interval);
+            window.removeEventListener('notifications_seen', handleSeenEvent);
+        };
     }, []);
 
     useEffect(() => {
@@ -85,7 +98,7 @@ export default function NotificationDropdown() {
     const handleNotificationClick = () => {
         setIsOpen(false);
         fetchNotifications();
-        router.push('/notifications');
+        router.push('/profile?tab=notifications');
     };
 
     return (
@@ -124,7 +137,7 @@ export default function NotificationDropdown() {
                                     <div
                                         key={notif._id}
                                         onClick={handleNotificationClick}
-                                        className="px-4 py-3 border-b border-border/50 hover:bg-muted/50 cursor-pointer transition-colors"
+                                        className={`px-4 py-3 border-b border-border/50 hover:bg-muted/50 cursor-pointer transition-colors ${notif.isUnseen ? 'bg-primary/5' : ''}`}
                                     >
                                         <div className="flex gap-3">
                                             <div className="mt-1 flex-shrink-0">
@@ -159,7 +172,7 @@ export default function NotificationDropdown() {
                         {notifications.length > 0 && (
                             <div className="px-4 py-2 text-center border-t border-border/50 bg-muted/20">
                                 <Link
-                                    href="/notifications"
+                                    href="/profile?tab=notifications"
                                     onClick={() => setIsOpen(false)}
                                     className="text-xs font-bold text-primary hover:underline"
                                 >

@@ -244,9 +244,6 @@ export default function Navbar() {
                               <Link href="/donations" className="flex items-center gap-3 px-4 py-2.5 text-sm text-secondary hover:bg-muted font-bold transition-colors">
                                 <History className="w-4 h-4 text-primary" /> Donation History
                               </Link>
-                              <Link href="/notifications" className="flex items-center gap-3 px-4 py-2.5 text-sm text-secondary hover:bg-muted font-bold transition-colors">
-                                <Bell className="w-4 h-4 text-primary" /> Notifications
-                              </Link>
                               <div className="border-t border-border/50 mt-1 pt-1">
                                 <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 font-bold transition-colors">
                                   <LogOut className="w-4 h-4" /> Logout

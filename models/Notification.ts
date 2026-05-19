@@ -17,7 +17,7 @@ const NotificationSchema = new mongoose.Schema(
         messageMr: String,
         type: {
             type: String,
-            enum: ['donation', 'event', 'general'],
+            enum: ['donation', 'event', 'general', 'DONATION_SUCCESS', 'REMINDER'],
             default: 'general',
         },
         amount: Number,
@@ -29,6 +29,9 @@ const NotificationSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+// TTL index for retention policy (90 days = 7776000 seconds)
+NotificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 7776000 });
 
 export default mongoose.models.Notification ||
     mongoose.model('Notification', NotificationSchema);

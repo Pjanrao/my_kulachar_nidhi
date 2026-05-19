@@ -54,7 +54,7 @@ export async function POST(req: Request) {
           titleMr: 'देणगी यशस्वी',
           message: `🙏 Kulachar Nidhi has successfully received your donation of ₹${donation.amount}. Thank you for your contribution and support.`,
           messageMr: `🙏 कुलाचार निधीला तुमचे ₹${donation.amount} चे देणगी यशस्वीरित्या प्राप्त झाले आहे. आपल्या सहकार्याबद्दल धन्यवाद.`,
-          type: 'donation',
+          type: 'DONATION_SUCCESS',
           amount: donation.amount,
         });
       }
