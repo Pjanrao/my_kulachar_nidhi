@@ -5,7 +5,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import {
   Users, Search, Filter, Phone,
-  Mail, Calendar, MapPin, UserCheck, Trash2, Edit, Eye, X, CheckCircle2, AlertCircle, ShieldCheck, UserX, Clock
+  Mail, Calendar, MapPin, UserCheck, Trash2, Edit, Eye, X, CheckCircle2, AlertCircle, ShieldCheck, UserX, Clock,
+  Cake, Home, UserPlus, Hash
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -26,6 +27,15 @@ const Toast = ({ message, type, onClose }: { message: string, type: 'success' | 
 };
 
 export default function AdminUsersPage() {
+  const formatDateSafe = (dateStr: string) => {
+    if (!dateStr) return 'N/A';
+    try {
+      return format(new Date(dateStr + 'T00:00:00'), 'dd MMM yyyy');
+    } catch (e) {
+      return dateStr;
+    }
+  };
+
   const { adminToken: token } = useSelector((state: RootState) => state.adminAuth);
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -255,9 +265,21 @@ export default function AdminUsersPage() {
                         <div className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
                           <Mail className="w-3 h-3" /> {u.email}
                         </div>
-                        {u.phone && (
-                          <div className="text-[10px] text-muted-foreground mt-0.5 font-medium uppercase tracking-wider italic">{u.phone}</div>
-                        )}
+                        <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5 items-center">
+                          {u.phone && (
+                            <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider italic">{u.phone}</div>
+                          )}
+                          {u.cityOrVillage && (
+                            <div className="text-[10px] text-muted-foreground/80 font-medium flex items-center gap-1">
+                              <MapPin className="w-2.5 h-2.5 text-primary/70" /> {u.cityOrVillage}{u.pincode ? `, ${u.pincode}` : ''}
+                            </div>
+                          )}
+                          {u.familyMembers && u.familyMembers.length > 0 && (
+                            <div className="text-[10px] text-primary/80 font-bold flex items-center gap-1">
+                              <Users className="w-2.5 h-2.5" /> {u.familyMembers.length} {u.familyMembers.length === 1 ? 'member' : 'members'}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -351,7 +373,7 @@ export default function AdminUsersPage() {
       {/* ✅ PROFILE MODAL */}
       {selectedUser && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-lg shadow-2xl overflow-hidden flex flex-col my-8">
+          <div className="bg-white rounded-[2.5rem] w-full max-w-xl shadow-2xl overflow-hidden flex flex-col my-8">
             <div className="flex justify-between items-center px-8 py-6 border-b shrink-0 bg-muted/10">
               <div>
                 <h2 className="text-xl font-black text-secondary">User Profile</h2>
@@ -365,18 +387,25 @@ export default function AdminUsersPage() {
               </button>
             </div>
             
-            <div className="p-8 space-y-6">
+            <div className="p-8 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar">
               <div className="flex items-center gap-6">
                 <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center text-primary text-3xl font-black">
                   {selectedUser.name?.charAt(0).toUpperCase()}
                 </div>
                 <div>
                   <h3 className="text-2xl font-black text-secondary">{selectedUser.name}</h3>
-                  <span className="inline-block px-2 py-0.5 bg-muted rounded-md text-[10px] font-black uppercase text-muted-foreground border border-border mt-1">{selectedUser.role}</span>
+                  <div className="flex flex-wrap gap-2 mt-1 items-center">
+                    <span className="inline-block px-2 py-0.5 bg-muted rounded-md text-[10px] font-black uppercase text-muted-foreground border border-border">{selectedUser.role}</span>
+                    {selectedUser.referralCode && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 rounded-md text-[10px] font-black uppercase text-primary border border-primary/20">
+                        <Hash className="w-3 h-3" /> Code: {selectedUser.referralCode}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-4">
+              <div className="grid grid-cols-2 gap-4 pt-2">
                 <div className="bg-muted/20 p-4 rounded-2xl border border-border/50">
                   <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Email</p>
                   <p className="text-sm font-bold text-secondary truncate">{selectedUser.email}</p>
@@ -386,8 +415,8 @@ export default function AdminUsersPage() {
                   <p className="text-sm font-bold text-secondary">{selectedUser.phone || 'N/A'}</p>
                 </div>
                 <div className="bg-muted/20 p-4 rounded-2xl border border-border/50">
-                  <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Total Donations</p>
-                  <p className="text-sm font-bold text-primary">₹{(selectedUser.totalDonations || 0).toLocaleString('en-IN')}</p>
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Date of Birth</p>
+                  <p className="text-sm font-bold text-secondary">{formatDateSafe(selectedUser.dob)}</p>
                 </div>
                 <div className="bg-muted/20 p-4 rounded-2xl border border-border/50">
                   <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Member Since</p>
@@ -395,15 +424,66 @@ export default function AdminUsersPage() {
                 </div>
               </div>
 
-              {selectedUser.familyMembers && selectedUser.familyMembers.length > 0 && (
-                <div className="pt-4 border-t border-border">
-                  <h4 className="text-sm font-black text-secondary mb-3 flex items-center gap-2">
-                    <Users className="w-4 h-4 text-primary" /> Family Members
-                  </h4>
-                  <div className="space-y-3 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-muted/20 p-4 rounded-2xl border border-border/50">
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">City / Village & Pincode</p>
+                  <p className="text-sm font-bold text-secondary">
+                    {selectedUser.cityOrVillage || 'N/A'} {selectedUser.pincode ? `(${selectedUser.pincode})` : ''}
+                  </p>
+                </div>
+                <div className="bg-muted/20 p-4 rounded-2xl border border-border/50">
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Total Donations</p>
+                  <p className="text-sm font-bold text-primary">₹{(selectedUser.totalDonations || 0).toLocaleString('en-IN')}</p>
+                </div>
+              </div>
+
+              <div className="bg-muted/10 p-4 rounded-2xl border border-border/50 space-y-2">
+                <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest flex items-center gap-1">
+                  <UserPlus className="w-3.5 h-3.5 text-primary" /> Referral Network
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                  <div>
+                    <p className="text-[9px] uppercase font-bold text-muted-foreground">Devotee Referral Code</p>
+                    <p className="text-xs font-bold text-secondary">{selectedUser.referralCode || 'None Generated'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[9px] uppercase font-bold text-muted-foreground">Referred By</p>
+                    {selectedUser.referredBy && typeof selectedUser.referredBy === 'object' ? (
+                      <div>
+                        <p className="text-xs font-bold text-secondary">{selectedUser.referredBy.name || 'Unknown User'}</p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {selectedUser.referredBy.phone || selectedUser.referredBy.email || ''}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-xs font-medium text-muted-foreground">Direct Registration</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-border">
+                <h4 className="text-sm font-black text-secondary mb-3 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-primary" /> Family Members
+                  {selectedUser.familyMembers && selectedUser.familyMembers.length > 0 && (
+                    <span className="px-2 py-0.5 bg-primary/10 rounded-full text-[10px] font-black text-primary border border-primary/20">
+                      {selectedUser.familyMembers.length}
+                    </span>
+                  )}
+                </h4>
+                {selectedUser.familyMembers && selectedUser.familyMembers.length > 0 ? (
+                  <div className="space-y-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                     {selectedUser.familyMembers.map((member: any, index: number) => (
-                      <div key={index} className="bg-muted/10 p-3 rounded-xl border border-border/50">
-                        <h5 className="font-bold text-secondary text-xs mb-1.5">{member.name}</h5>
+                      <div key={index} className="bg-muted/15 p-3.5 rounded-xl border border-border/50 hover:border-primary/30 transition-colors">
+                        <div className="flex items-center justify-between mb-2">
+                          <h5 className="font-bold text-secondary text-xs">{member.name}</h5>
+                          {member.dob && (
+                            <span className="inline-flex items-center gap-1 text-[9px] text-muted-foreground bg-white border border-border px-1.5 py-0.5 rounded-md font-bold uppercase">
+                              <Cake className="w-2.5 h-2.5 text-primary/70" /> 
+                              {formatDateSafe(member.dob)}
+                            </span>
+                          )}
+                        </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {member.mobile && (
                             <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium">
@@ -411,21 +491,20 @@ export default function AdminUsersPage() {
                             </div>
                           )}
                           {member.email && (
-                            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium">
+                            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium truncate">
                               <Mail className="w-3 h-3 text-primary/60" /> {member.email}
-                            </div>
-                          )}
-                          {member.dob && (
-                            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium">
-                              <Calendar className="w-3 h-3 text-primary/60" /> {new Date(member.dob).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                             </div>
                           )}
                         </div>
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="text-center py-6 bg-muted/5 border border-dashed border-border rounded-xl">
+                    <p className="text-xs text-muted-foreground font-medium">No family members registered</p>
+                  </div>
+                )}
+              </div>
 
               <div className="pt-6">
                 <button

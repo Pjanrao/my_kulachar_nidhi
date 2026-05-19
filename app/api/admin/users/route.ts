@@ -102,7 +102,10 @@ export async function GET(req: Request) {
       });
     } else {
       // Default: Return normal users (devotees)
-      const users = await User.find({ role: 'user' }, '-password').sort({ createdAt: -1 }).lean();
+      const users = await User.find({ role: 'user' }, '-password')
+        .populate('referredBy', 'name email phone')
+        .sort({ createdAt: -1 })
+        .lean();
       return new Response(JSON.stringify(users || []), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
