@@ -146,14 +146,14 @@ export default function ProfilePage() {
         <div className="flex flex-col md:flex-row gap-8">
           {/* Vertical Sidebar Tabs */}
           <div className="w-full md:w-64 flex flex-col gap-3 shrink-0">
-            <button 
-              onClick={() => { setActiveTab('profile'); window.history.pushState({}, '', '/profile'); }} 
+            <button
+              onClick={() => { setActiveTab('profile'); window.history.pushState({}, '', '/profile'); }}
               className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all w-full text-left ${activeTab === 'profile' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'bg-white text-muted-foreground hover:bg-muted border border-border'}`}
             >
               <User className="w-5 h-5 shrink-0" /> Profile
             </button>
-            <button 
-              onClick={() => { setActiveTab('notifications'); window.history.pushState({}, '', '/profile?tab=notifications'); }} 
+            <button
+              onClick={() => { setActiveTab('notifications'); window.history.pushState({}, '', '/profile?tab=notifications'); }}
               className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all w-full text-left ${activeTab === 'notifications' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'bg-white text-muted-foreground hover:bg-muted border border-border'}`}
             >
               <Bell className="w-5 h-5 shrink-0" /> Notifications
@@ -163,172 +163,172 @@ export default function ProfilePage() {
           {/* Main Content Area */}
           <div className="flex-1 min-w-0">
 
-        {activeTab === 'profile' ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Account Overview */}
-          <div className="md:col-span-2 space-y-6">
-            <div className="spiritual-card p-8">
-              <div className="flex items-center justify-between mb-6 border-b border-border pb-4">
-                <h2 className="text-xl font-black text-secondary">Personal Information</h2>
-              </div>
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
-                  <div>
-                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Email Identity</label>
-                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
-                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                        <Mail className="w-4 h-4 text-primary" />
+            {activeTab === 'profile' ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Account Overview */}
+                <div className="md:col-span-2 space-y-6">
+                  <div className="spiritual-card p-8">
+                    <div className="flex items-center justify-between mb-6 border-b border-border pb-4">
+                      <h2 className="text-xl font-black text-secondary">Personal Information</h2>
+                    </div>
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+                        <div>
+                          <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Email Identity</label>
+                          <div className="flex items-center gap-3 text-secondary font-bold text-sm">
+                            <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                              <Mail className="w-4 h-4 text-primary" />
+                            </div>
+                            {user.email}
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Contact Number</label>
+                          <div className="flex items-center gap-3 text-secondary font-bold text-sm">
+                            <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                              <Phone className="w-4 h-4 text-primary" />
+                            </div>
+                            <span className="truncate">{user.phone || 'Not Provided'}</span>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Date of Birth</label>
+                          <div className="flex items-center gap-3 text-secondary font-bold text-sm">
+                            <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                              <Cake className="w-4 h-4 text-primary" />
+                            </div>
+                            {formattedDOB}
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Role Access</label>
+                          <div className="flex items-center gap-3 text-secondary font-bold text-sm">
+                            <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                              <Shield className="w-4 h-4 text-primary" />
+                            </div>
+                            <span className="capitalize">{user.role}</span>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">City / Village</label>
+                          <div className="flex items-center gap-3 text-secondary font-bold text-sm">
+                            <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                              <Home className="w-4 h-4 text-primary" />
+                            </div>
+                            {user.cityOrVillage || 'Not Provided'}
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Pincode</label>
+                          <div className="flex items-center gap-3 text-secondary font-bold text-sm">
+                            <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                              <MapPin className="w-4 h-4 text-primary" />
+                            </div>
+                            {user.pincode || 'Not Provided'}
+                          </div>
+                        </div>
+
+                        <div className="sm:col-span-2">
+                          <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Joined Date</label>
+                          <div className="flex items-center gap-3 text-secondary font-bold text-sm">
+                            <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                              <Calendar className="w-4 h-4 text-primary" />
+                            </div>
+                            {formattedJoinedDate}
+                          </div>
+                        </div>
                       </div>
-                      {user.email}
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Contact Number</label>
-                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
-                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                        <Phone className="w-4 h-4 text-primary" />
+                  {/* Family Information */}
+                  {user.familyMembers && user.familyMembers.length > 0 && (
+                    <div className="spiritual-card p-8">
+                      <div className="flex items-center justify-between mb-6 border-b border-border pb-4">
+                        <h2 className="text-xl font-black text-secondary flex items-center gap-2">
+                          <Users className="w-5 h-5 text-primary" /> Family Members
+                        </h2>
                       </div>
-                      <span className="truncate">{user.phone || 'Not Provided'}</span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {user.familyMembers.map((member: any, index: number) => (
+                          <div key={index} className="bg-muted/10 p-4 rounded-2xl border border-border/50">
+                            <h3 className="font-bold text-secondary text-sm mb-2">{member.name}</h3>
+                            <div className="space-y-1.5">
+                              {member.mobile && (
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Phone className="w-3.5 h-3.5 text-primary/70" /> {member.mobile}
+                                </div>
+                              )}
+                              {member.email && (
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Mail className="w-3.5 h-3.5 text-primary/70" /> {member.email}
+                                </div>
+                              )}
+                              {member.dob && (
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Cake className="w-3.5 h-3.5 text-primary/70" />
+                                  {new Date(member.dob).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
+                  )}
+                </div>
+
+                {/* Stats Sidebar */}
+                <div className="space-y-6">
+                  <div className="spiritual-card p-6 border-primary/20 bg-primary/5">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em]">Donation Summary</h3>
+                      <Heart className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="text-3xl font-black text-secondary flex items-baseline gap-1">
+                      <IndianRupee className="w-5 h-5 text-accent" />
+                      {user.totalDonations?.toLocaleString() || '0'}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground font-bold mt-2">Lifetime Charity Contribution</p>
+
+                    <button
+                      onClick={() => router.push('/donations')}
+                      className="w-full mt-6 spiritual-button text-xs py-3"
+                    >
+                      View History
+                    </button>
                   </div>
 
-                  <div>
-                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Date of Birth</label>
-                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
-                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                        <Cake className="w-4 h-4 text-primary" />
-                      </div>
-                      {formattedDOB}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Role Access</label>
-                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
-                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                        <Shield className="w-4 h-4 text-primary" />
-                      </div>
-                      <span className="capitalize">{user.role}</span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">City / Village</label>
-                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
-                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                        <Home className="w-4 h-4 text-primary" />
-                      </div>
-                      {user.cityOrVillage || 'Not Provided'}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Pincode</label>
-                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
-                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                        <MapPin className="w-4 h-4 text-primary" />
-                      </div>
-                      {user.pincode || 'Not Provided'}
-                    </div>
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-2">Joined Date</label>
-                    <div className="flex items-center gap-3 text-secondary font-bold text-sm">
-                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                        <Calendar className="w-4 h-4 text-primary" />
-                      </div>
-                      {formattedJoinedDate}
-                    </div>
+                  <div className="spiritual-card p-6">
+                    <h3 className="text-xs font-black text-secondary uppercase tracking-[0.2em] mb-4">Quick Links</h3>
+                    <ul className="space-y-3">
+                      <li>
+                        <button className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Security Settings
+                        </button>
+                      </li>
+                      <li>
+                        <button className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Notification Preferences
+                        </button>
+                      </li>
+                      <li>
+                        <button className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Legal & Terms
+                        </button>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Family Information */}
-            {user.familyMembers && user.familyMembers.length > 0 && (
-              <div className="spiritual-card p-8">
-                <div className="flex items-center justify-between mb-6 border-b border-border pb-4">
-                  <h2 className="text-xl font-black text-secondary flex items-center gap-2">
-                    <Users className="w-5 h-5 text-primary" /> Family Members
-                  </h2>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {user.familyMembers.map((member: any, index: number) => (
-                    <div key={index} className="bg-muted/10 p-4 rounded-2xl border border-border/50">
-                      <h3 className="font-bold text-secondary text-sm mb-2">{member.name}</h3>
-                      <div className="space-y-1.5">
-                        {member.mobile && (
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Phone className="w-3.5 h-3.5 text-primary/70" /> {member.mobile}
-                          </div>
-                        )}
-                        {member.email && (
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Mail className="w-3.5 h-3.5 text-primary/70" /> {member.email}
-                          </div>
-                        )}
-                        {member.dob && (
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Cake className="w-3.5 h-3.5 text-primary/70" /> 
-                            {new Date(member.dob).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            ) : (
+              <NotificationsTab />
             )}
-          </div>
-
-          {/* Stats Sidebar */}
-          <div className="space-y-6">
-            <div className="spiritual-card p-6 border-primary/20 bg-primary/5">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em]">Donation Summary</h3>
-                <Heart className="w-4 h-4 text-primary" />
-              </div>
-              <div className="text-3xl font-black text-secondary flex items-baseline gap-1">
-                <IndianRupee className="w-5 h-5 text-accent" />
-                {user.totalDonations?.toLocaleString() || '0'}
-              </div>
-              <p className="text-[10px] text-muted-foreground font-bold mt-2">Lifetime Charity Contribution</p>
-
-              <button
-                onClick={() => router.push('/donations')}
-                className="w-full mt-6 spiritual-button text-xs py-3"
-              >
-                View History
-              </button>
-            </div>
-
-            <div className="spiritual-card p-6">
-              <h3 className="text-xs font-black text-secondary uppercase tracking-[0.2em] mb-4">Quick Links</h3>
-              <ul className="space-y-3">
-                <li>
-                  <button className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Security Settings
-                  </button>
-                </li>
-                <li>
-                  <button className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Notification Preferences
-                  </button>
-                </li>
-                <li>
-                  <button className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Legal & Terms
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        ) : (
-          <NotificationsTab />
-        )}
           </div>
         </div>
 
@@ -526,7 +526,7 @@ export default function ProfilePage() {
                           <Plus className="w-3 h-3" /> Add Member
                         </button>
                       </div>
-                      
+
                       <div className="space-y-4">
                         {editData.familyMembers.map((member, index) => (
                           <div key={index} className="bg-muted/20 p-4 rounded-2xl border border-border/50 relative">
@@ -638,7 +638,7 @@ export default function ProfilePage() {
 const NotificationsTab = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -648,14 +648,14 @@ const NotificationsTab = () => {
         if (!res.ok) return;
         const data = await res.json();
         setNotifications(data);
-        
+
         // Mark all as seen
         const seenIdsStr = localStorage.getItem('seen_notif_ids');
         const seenIds = seenIdsStr ? JSON.parse(seenIdsStr) : [];
         const currentIds = data.map((n: any) => n._id);
         const newSeenIds = Array.from(new Set([...seenIds, ...currentIds]));
         localStorage.setItem('seen_notif_ids', JSON.stringify(newSeenIds));
-        
+
         window.dispatchEvent(new Event('notifications_seen'));
       } catch (error) {
         console.error(error);

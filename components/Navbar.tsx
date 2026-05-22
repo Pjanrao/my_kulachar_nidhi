@@ -268,13 +268,83 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Menu Button */}
+            {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center gap-4">
               <NotificationDropdown />
-              {mounted && !isAuthenticated && (
-                <Link href="/login" className="text-secondary p-1">
-                  <User className="w-6 h-6" />
-                </Link>
+
+              {mounted && (
+                isAuthenticated ? (
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowProfileMenu(!showProfileMenu)}
+                      className="w-9 h-9 rounded-full bg-muted flex items-center justify-center border-2 border-border hover:border-primary transition-all overflow-hidden"
+                    >
+                      <User className="w-5 h-5 text-secondary" />
+                    </button>
+
+                    <AnimatePresence>
+                      {showProfileMenu && (
+                        <>
+                          <div
+                            className="fixed inset-0 z-40"
+                            onClick={() => setShowProfileMenu(false)}
+                          />
+
+                          <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            className="absolute right-0 top-12 w-60 bg-white rounded-2xl shadow-2xl border border-border py-2 z-50 overflow-hidden"
+                          >
+                            <div className="px-4 py-3 bg-muted/30 border-b border-border/50">
+                              <p className="text-xs font-black text-secondary uppercase tracking-tight truncate">
+                                {user?.name}
+                              </p>
+                              <p className="text-[10px] text-muted-foreground truncate">
+                                {user?.email}
+                              </p>
+                            </div>
+
+
+                            <Link
+                              href="/profile"
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-secondary hover:bg-muted font-bold transition-colors"
+                              onClick={() => setShowProfileMenu(false)}
+                            >
+                              <User className="w-4 h-4 text-primary" />
+                              {t('profile.my_profile')}
+                            </Link>
+
+                            <Link
+                              href="/donations"
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-secondary hover:bg-muted font-bold transition-colors"
+                              onClick={() => setShowProfileMenu(false)}
+                            >
+                              <History className="w-4 h-4 text-primary" />
+                              {t('profile.donation_history')}
+                            </Link>
+
+                            <div className="border-t border-border/50 mt-1 pt-1">
+                              <button
+                                onClick={handleLogout}
+                                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 font-bold transition-colors"
+                              >
+                                <LogOut className="w-4 h-4" />
+                                {t('profile.logout')}
+                              </button>
+                            </div>
+                          </motion.div>
+                        </>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ) : (
+                  <Link href="/login" className="text-secondary p-1">
+                    <User className="w-6 h-6" />
+                  </Link>
+                )
               )}
+
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="p-2 rounded-xl text-secondary hover:bg-muted transition-colors"
