@@ -79,6 +79,19 @@ export default function DonationForm() {
     fetchCountries();
   }, []);
 
+
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+
+    document.body.appendChild(script);
+  }, []);
+
+
+
+
   const purposes = [
     t('donation.purposes.general'),
     t('donation.purposes.building'),
@@ -112,12 +125,66 @@ export default function DonationForm() {
     });
   };
 
-  const handleDonateClick = (e: React.FormEvent) => {
+  const handleDonateClick = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStep('scanner');
+    if (loading) return;
+
+    try {
+      setLoading(true);
+
+      // 1. Create Order
+      const { data } = await axios.post('/api/payment/create-order', {
+        amount: formData.amount
+      });
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to create order");
+      }
+
+      const { order } = data;
+
+      // 2. Open Razorpay Popup
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Kulachar Nidhi",
+        description: "Donation Payment",
+        order_id: order.id,
+        handler: async function (response: any) {
+          // Handle Payment Success
+          await handlePaymentSuccess(response, order.id);
+        },
+        prefill: {
+          name: formData.donorName,
+          email: formData.email,
+          contact: formData.mobileNumber,
+        },
+        theme: {
+          color: "#E65100",
+        },
+        modal: {
+          ondismiss: function () {
+            setLoading(false);
+          }
+        }
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on('payment.failed', function (response: any) {
+        alert("Payment Failed: " + response.error.description);
+        setLoading(false);
+      });
+      rzp.open();
+
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.message || err.message || "Something went wrong");
+      setLoading(false);
+    }
   };
 
-  const handlePaymentConfirm = async () => {
+  const handlePaymentSuccess = async (response: any, orderId: string) => {
     setLoading(true);
     setStep('processing');
 
@@ -129,6 +196,9 @@ export default function DonationForm() {
         reason: formData.purpose || formData.occasion || 'General Donation',
         mobileNumber: formData.countryCode + formData.mobileNumber,
         occasionDate: formData.occasionDate ? new Date(formData.occasionDate) : undefined,
+        razorpayPaymentId: response.razorpay_payment_id,
+        razorpayOrderId: response.razorpay_order_id,
+        razorpaySignature: response.razorpay_signature,
       }, config);
 
       if (res.data.success) {
@@ -146,7 +216,7 @@ export default function DonationForm() {
       }
     } catch (err) {
       console.error(err);
-      alert('Failed to process donation. Please try again.');
+      alert('Payment succeeded but donation save failed.');
       setStep('form');
       setLoading(false);
     }
@@ -158,92 +228,7 @@ export default function DonationForm() {
     }
   };
 
-  if (step === 'scanner') {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="max-w-[420px] mx-auto bg-white rounded-[2rem] overflow-hidden shadow-2xl border border-border"
-      >
-        {/* Header */}
-        <div className="bg-secondary px-6 py-5 flex items-center justify-between relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-secondary to-secondary/80 z-0" />
-          <button onClick={() => setStep('form')} className="relative z-10 p-2 -ml-2 hover:bg-white/10 rounded-full transition-colors text-white">
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div className="relative z-10 text-center flex-1">
-            <h2 className="text-sm font-black text-white uppercase tracking-widest">Complete Payment</h2>
-          </div>
-          <div className="w-9" />
-        </div>
 
-        <div className="p-8 space-y-8 bg-gradient-to-b from-muted/20 to-white">
-          {/* Trust Details & Amount */}
-          <div className="text-center space-y-4">
-            <div>
-              <h3 className="text-sm font-bold text-secondary uppercase tracking-tight">Shri Mahalakshmi Temple Trust</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">Verified UPI Merchant</p>
-            </div>
-
-            <div className="bg-white py-4 rounded-2xl border border-border shadow-sm">
-              <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest mb-1">Amount to Pay</p>
-              <div className="flex items-start justify-center text-primary">
-                <span className="text-2xl font-bold mt-1">₹</span>
-                <span className="text-5xl font-black tracking-tighter">{formData.amount}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* QR Code Area */}
-          <div className="flex flex-col items-center space-y-5">
-            <div className="relative p-5 bg-white rounded-3xl shadow-md border border-border">
-              {/* Scanner Corner Marks */}
-              <div className="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-primary rounded-tl-3xl opacity-80" />
-              <div className="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-primary rounded-tr-3xl opacity-80" />
-              <div className="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-primary rounded-bl-3xl opacity-80" />
-              <div className="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-primary rounded-br-3xl opacity-80" />
-
-              {/* Animated Scan Line */}
-              <motion.div
-                animate={{ top: ['0%', '100%', '0%'] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' }}
-                className="absolute left-2 right-2 h-[2px] bg-primary/60 shadow-[0_0_12px_rgba(230,81,0,0.9)] z-10 rounded-full"
-              />
-
-              <QrCode className="w-48 h-48 text-secondary stroke-[1.2px]" />
-
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg border border-border">
-                  <img src="/devi.png" alt="Trust Logo" className="w-8 h-8 object-contain" />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 opacity-50 grayscale">
-              <span className="text-xs font-black text-secondary">GPay</span>
-              <div className="w-1 h-1 rounded-full bg-secondary" />
-              <span className="text-xs font-black text-secondary">PhonePe</span>
-              <div className="w-1 h-1 rounded-full bg-secondary" />
-              <span className="text-xs font-black text-secondary">Paytm</span>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="space-y-4 pt-2">
-            <button
-              onClick={handlePaymentConfirm}
-              className="w-full spiritual-button !h-14 text-sm gap-3 shadow-xl shadow-primary/25"
-            >
-              <CheckCircle2 className="w-5 h-5" /> I have completed the payment
-            </button>
-            <div className="flex items-center justify-center gap-1.5 text-emerald-600 text-[10px] font-black uppercase tracking-widest">
-              <ShieldCheck className="w-3.5 h-3.5" /> 100% Secure Transaction
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    );
-  }
 
   if (step === 'processing') {
     return (

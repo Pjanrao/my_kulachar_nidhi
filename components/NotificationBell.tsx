@@ -9,17 +9,27 @@ export default function NotificationBell() {
 
     const fetchCount = async () => {
         try {
+            // Stop polling if no token is found in localStorage
+            if (typeof window !== 'undefined' && !localStorage.getItem('token')) {
+                return;
+            }
 
             const res = await fetch('/api/notifications', {
                 credentials: 'include',
             });
+
+            if (res.status === 401 || res.status === 403) {
+                console.log('NotificationBell: Auth error, stopping poll');
+                // The AuthInterceptor will handle the redirect, but we stop further logic here
+                return;
+            }
+
             if (!res.ok) return;
             const data = await res.json();
             const unread = data.filter((n: any) => !n.isRead).length;
             setCount(unread);
         } catch {
             // Silently ignore network errors — bell is non-critical UI
-
         }
     };
 

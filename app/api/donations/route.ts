@@ -7,11 +7,27 @@ import ActivityLog from '@/models/ActivityLog';
 import { generateReceiptNumber } from '@/lib/utils';
 import { getDataFromToken } from '@/lib/auth';
 import { sendDonationReceipt } from '@/lib/email';
+import crypto from 'crypto';
 
 export async function POST(req: Request) {
   try {
     await dbConnect();
     const body = await req.json();
+
+    const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = body;
+
+    // Verify Razorpay Payment Signature
+    if (razorpayOrderId && razorpayPaymentId && razorpaySignature) {
+      const generated_signature = crypto
+        .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
+        .update(razorpayOrderId + "|" + razorpayPaymentId)
+        .digest('hex');
+
+      if (generated_signature !== razorpaySignature) {
+        return NextResponse.json({ success: false, message: "Invalid payment signature" }, { status: 400 });
+      }
+    }
+
     // Get user details from token if authenticated
     const decoded = await getDataFromToken();
     let userId = null;

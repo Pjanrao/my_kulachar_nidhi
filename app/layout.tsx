@@ -3,6 +3,8 @@ import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/LanguageContext";
 import ReduxProvider from "@/redux/provider";
+import AuthInterceptor from "@/components/AuthInterceptor";
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,6 +29,7 @@ export default function RootLayout({ children }: any) {
     >
       <body className="min-h-full flex flex-col">
         <ReduxProvider>
+          <AuthInterceptor />
           <LanguageProvider>
             {children}
           </LanguageProvider>

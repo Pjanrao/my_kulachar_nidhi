@@ -661,15 +661,27 @@ const NotificationsTab = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { t, lang } = useLanguage();
+  const { token } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
         const res = await fetch(`/api/notifications?t=${Date.now()}`, {
           credentials: 'include',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         });
-        if (!res.ok) return;
+        if (!res.ok) {
+          console.error('Frontend: Notifications fetch failed with status:', res.status);
+          return;
+        }
         const data = await res.json();
+        console.log('Frontend: Fetched notifications count:', data.length);
+        if (data.length > 0) {
+          console.log('Frontend: First notification type:', data[0].type);
+          console.log('Frontend: Birthday reminder present?', data.some((n: any) => n.type === 'REMINDER'));
+        }
         setNotifications(data);
 
         // Mark all as seen

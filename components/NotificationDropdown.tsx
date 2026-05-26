@@ -17,9 +17,21 @@ export default function NotificationDropdown() {
 
     const fetchNotifications = async () => {
         try {
+            // Stop polling if no token is found in localStorage
+            if (typeof window !== 'undefined' && !localStorage.getItem('token')) {
+                return;
+            }
+
             const res = await fetch(`/api/notifications?t=${Date.now()}`, {
                 credentials: 'include',
             });
+
+            if (res.status === 401 || res.status === 403) {
+                console.log('NotificationDropdown: Auth error, stopping poll');
+                // The AuthInterceptor will handle the redirect
+                return;
+            }
+
             if (!res.ok) return;
             const data = await res.json();
             

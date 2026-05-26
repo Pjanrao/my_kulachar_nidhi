@@ -38,6 +38,9 @@ const DonationSchema = new mongoose.Schema({
     default: 'UPI',
   },
   transactionId: String,
+  razorpayPaymentId: String,
+  razorpayOrderId: String,
+  razorpaySignature: String,
   receiptNumber: {
     type: String,
     unique: true,

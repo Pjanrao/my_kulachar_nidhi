@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET || 'fallback_secret_key',
-      { expiresIn: '1d' }
+      { expiresIn: '7d' }
     );
 
     const isAdminAccess = user.role === 'admin' || user.role === 'president';
