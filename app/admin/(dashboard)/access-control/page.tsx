@@ -206,7 +206,7 @@ export default function AccessControlPage() {
 
       let matchesTab = true;
       if (activeTab === 'collectors') matchesTab = u.role === 'collector';
-      else if (activeTab === 'agents') matchesTab = u.role === 'agent';
+      // else if (activeTab === 'agents') matchesTab = u.role === 'agent';
       else if (activeTab === 'admins') matchesTab = u.role === 'admin' || u.role === 'president';
       else if (activeTab === 'pending') matchesTab = u.approvalStatus === 'pending';
       else if (activeTab === 'rejected') matchesTab = u.approvalStatus === 'rejected';
@@ -326,7 +326,7 @@ export default function AccessControlPage() {
           {/* Controls & Tabs */}
           <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
-              {['all', 'collectors', 'agents', 'admins', 'pending', 'rejected'].map(tab => (
+              {['all', 'collectors', 'admins', 'pending', 'rejected'].map(tab => (
                 <button
                   key={tab}
                   onClick={() => { setActiveTab(tab); setCurrentPage(1); }}
@@ -349,9 +349,9 @@ export default function AccessControlPage() {
                   className="w-full pl-11 pr-4 h-12 bg-muted/20 border-transparent rounded-2xl text-sm focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all font-medium"
                 />
               </div>
-              <button className="h-12 px-6 bg-muted/20 hover:bg-muted text-secondary rounded-2xl flex items-center gap-2 text-xs font-bold transition-all">
+              {/* <button className="h-12 px-6 bg-muted/20 hover:bg-muted text-secondary rounded-2xl flex items-center gap-2 text-xs font-bold transition-all">
                 <Filter className="w-4 h-4" /> Advanced Filter
-              </button>
+              </button> */}
             </div>
           </div>
 
@@ -443,12 +443,12 @@ export default function AccessControlPage() {
                                 >
                                   <Eye className="w-4 h-4" />
                                 </button>
-                                <button
+                                {/* <button
                                   onClick={() => { setSelectedUser(u); setEditForm({ ...u }); setIsEditModalOpen(true); }}
                                   className="p-2.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm flex items-center gap-2 text-[10px] font-black uppercase tracking-widest"
                                 >
                                   <Edit className="w-4 h-4" />
-                                </button>
+                                </button> */}
                                 <button
                                   onClick={() => handleDeleteUser(u._id)}
                                   className="p-2.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all shadow-sm"
@@ -469,7 +469,7 @@ export default function AccessControlPage() {
             {/* Pagination */}
             {totalPages > 1 && (
               <div className="px-6 py-5 bg-muted/20 border-t border-border flex items-center justify-between">
-                <p className="text-xs font-bold text-muted-foreground">Showing {paginatedUsers.length} of {filteredUsers.length} Personnel</p>
+                <p className="text-xs font-bold text-muted-foreground">Showing {paginatedUsers.length} of {filteredUsers.length} Pages</p>
                 <div className="flex items-center gap-2">
                   <button
                     disabled={currentPage === 1}
@@ -615,12 +615,12 @@ export default function AccessControlPage() {
                   </div>
 
                   <div className="pt-4 border-t border-border">
-                    <button
+                    {/* <button
                       onClick={() => { setIsViewModalOpen(false); setEditForm({ ...selectedUser }); setIsEditModalOpen(true); }}
                       className="w-full py-4 bg-secondary hover:bg-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-secondary/20 flex items-center justify-center gap-2"
                     >
                       <Shield className="w-4 h-4" /> Edit Permissions
-                    </button>
+                    </button> */}
                   </div>
                 </div>
 
@@ -675,7 +675,7 @@ export default function AccessControlPage() {
       </AnimatePresence>
 
       {/* Edit Permissions Modal */}
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {isEditModalOpen && editForm && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsEditModalOpen(false)} className="absolute inset-0 bg-secondary/80 backdrop-blur-md" />
@@ -800,7 +800,7 @@ export default function AccessControlPage() {
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
     </div>
   );
 }

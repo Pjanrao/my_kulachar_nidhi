@@ -217,7 +217,6 @@ export default function GallerySection() {
       </div>
 
       {/* IMAGE PREVIEW MODAL */}
-      {/* IMAGE PREVIEW MODAL */}
       <AnimatePresence>
         {selectedImage && (
           <motion.div
