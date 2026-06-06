@@ -72,21 +72,15 @@ export default function Home() {
 
                   {/* Badge */}
                   <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-[11px] font-semibold mb-3">
-                    🙏 पवित्र देणगी अभियान
+                    {t('renovation.badge')}
                   </div>
 
                   {/* Heading */}
-                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-3">
-                    आपल्या देणगीतून
-                    <span className="block text-orange-600">
-                      मंदिर विकासाला सहकार्य
-                    </span>
-                  </h2>
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-3" dangerouslySetInnerHTML={{ __html: t('renovation.title') }} />
 
                   {/* Description */}
                   <p className="text-sm text-gray-600 leading-6 mb-5">
-                    श्री कुलस्वामिनी एकवीरा देवी मंदिराच्या जीर्णोद्धार,
-                    भक्तनिवास आणि धार्मिक कार्यांसाठी आपले सहकार्य आवश्यक आहे.
+                    {t('renovation.desc')}
                   </p>
 
                   {/* Donation Amounts */}
@@ -111,7 +105,7 @@ export default function Home() {
                       href="/donation"
                       className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-2xl text-[12px] font-black uppercase tracking-widest shadow-xl shadow-orange-200 transition-all duration-300 flex items-center gap-2 w-fit"
                     >
-                      🙏 {lang === 'mr' ? 'देणगी द्या' : 'Donate Now'}
+                      🙏 {t('renovation.cta_donate')}
                     </Link>
 
                     {/* <button className="border border-orange-200 hover:bg-orange-50 text-orange-700 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300">
@@ -124,15 +118,15 @@ export default function Home() {
                   <div className="flex flex-wrap gap-4 mt-5 text-[11px] text-gray-500">
 
                     <div className="flex items-center gap-1.5">
-                      ✅ सुरक्षित देयक
+                      ✅ {t('common.secured_payment')}
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      🛕 मंदिर ट्रस्ट
+                      🛕 {t('footer.about_trust')}
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      💠 आध्यात्मिक सेवा
+                      💠 {t('renovation.floating.title')}
                     </div>
 
                   </div>
@@ -153,11 +147,11 @@ export default function Home() {
                     </div>
 
                     <h3 className="text-xl font-bold text-gray-900 mb-2">
-                      Scan & Donate
+                      {t('donation.title')}
                     </h3>
 
                     <p className="text-xs text-gray-600 leading-5 mb-4">
-                      QR स्कॅन करून मंदिर विकासासाठी देणगी अर्पण करा.
+                      {t('donation.subtitle')}
                     </p>
 
                     {/* QR CODE */}
@@ -186,7 +180,7 @@ export default function Home() {
 
                     {/* Note */}
                     <p className="text-[10px] text-gray-500 leading-4">
-                      * सर्व देणग्या सुरक्षितपणे मंदिर ट्रस्टमार्फत नोंदवल्या जातील.
+                      {t('renovation.donor_note')}
                     </p>
 
                   </div>
