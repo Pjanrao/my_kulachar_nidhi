@@ -78,7 +78,7 @@ export async function POST(req: Request) {
             const tokens = users.map(u => u.fcmToken).filter(Boolean);
 
             if (tokens.length > 0) {
-                const payload = {
+                const payload: any = {
                     notification: {
                         title: body.title_en || body.title || 'Kulachar Nidhi',
                         body: body.desc_en || body.message || 'New announcement received',
@@ -87,6 +87,13 @@ export async function POST(req: Request) {
                         type: body.type || 'general',
                         notificationId: notif._id.toString()
                     },
+                    android: {
+                        priority: 'high',
+                        notification: {
+                            channelId: 'push-notifications',
+                            sound: 'default'
+                        }
+                    },
                     tokens: tokens
                 };
 
@@ -94,6 +101,14 @@ export async function POST(req: Request) {
                 if (msg) {
                     const response = await msg.sendEachForMulticast(payload);
                     console.log(`[Admin Broadcast] Successfully sent ${response.successCount} messages; Failed ${response.failureCount}`);
+
+                    if (response.failureCount > 0) {
+                        response.responses.forEach((resp, idx) => {
+                            if (!resp.success) {
+                                console.error(`[Admin Broadcast] Token ${tokens[idx]} failed with error:`, resp.error);
+                            }
+                        });
+                    }
                 }
             } else {
                 console.log('[Admin Broadcast] No FCM tokens found to send push notification.');
