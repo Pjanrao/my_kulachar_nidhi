@@ -40,4 +40,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Required for Android 13+ to ask for notification permission -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Required for Capacitor Camera plugin -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <!-- For Android 12 and below -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
 </manifest>
