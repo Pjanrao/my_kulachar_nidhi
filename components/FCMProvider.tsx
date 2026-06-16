@@ -20,6 +20,18 @@ export default function FCMProvider() {
             // Only attempt native push setup if we are on a native device (Android/iOS)
             if (Capacitor.isNativePlatform()) {
                 try {
+                    // Create a notification channel (Required for Android 8+)
+                    await PushNotifications.createChannel({
+                        id: 'push-notifications',
+                        name: 'Push Notifications',
+                        description: 'General push notifications',
+                        importance: 5, // High importance
+                        visibility: 1, // Public
+                        sound: 'default',
+                        vibration: true
+                    });
+                    console.log('Notification channel created/already exists');
+
                     // 1. Check and Request Permission (Triggers the Android 13+ popup)
                     let permStatus = await PushNotifications.checkPermissions();
 
